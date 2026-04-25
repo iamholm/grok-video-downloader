@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Grok Video Downloader</title>
+    <link rel="stylesheet" href="popup.css">
+  </head>
+  <body>
+    <main class="panel">
+      <header class="header">
+        <div>
+          <h1>Grok Video Downloader</h1>
+          <p>Скачивает только video/mp4 из твоей текущей сессии Grok.</p>
+        </div>
+      </header>
+
+      <label class="field">
+        <span>Папка внутри Downloads</span>
+        <input id="folder" type="text" value="grok-videos" spellcheck="false">
+      </label>
+
+      <section class="stats" aria-live="polite">
+        <div>
+          <span>Найдено</span>
+          <strong id="total">0</strong>
+        </div>
+        <div>
+          <span>Скачано</span>
+          <strong id="downloaded">0</strong>
+        </div>
+        <div>
+          <span>Пропущено</span>
+          <strong id="skipped">0</strong>
+        </div>
+        <div>
+          <span>Ошибки</span>
+          <strong id="failed">0</strong>
+        </div>
+      </section>
+
+      <div class="progress">
+        <div id="bar" class="bar"></div>
+      </div>
+      <div id="status" class="status">Открой grok.com/files?fileType=video и нажми Scan.</div>
+
+      <section class="buttons">
+        <button id="scan">Scan</button>
+        <button id="start">Download</button>
+        <button id="pause">Pause</button>
+        <button id="resume">Resume</button>
+      </section>
+
+      <button id="clear" class="secondary">Reset extension history</button>
+
+      <pre id="errors" class="errors" hidden></pre>
+    </main>
+    <script src="popup.js"></script>
+  </body>
+</html>

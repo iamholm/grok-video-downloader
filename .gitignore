@@ -1,0 +1,8 @@
+.DS_Store
+Thumbs.db
+*.log
+*.tmp
+*.crdownload
+node_modules/
+dist/
+build/

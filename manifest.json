@@ -1,0 +1,22 @@
+{
+  "manifest_version": 3,
+  "name": "Grok Video Downloader",
+  "description": "Download your Grok Imagine video files from the authenticated Grok assets API.",
+  "version": "0.1.0",
+  "action": {
+    "default_title": "Grok Video Downloader",
+    "default_popup": "src/popup.html"
+  },
+  "background": {
+    "service_worker": "src/background.js"
+  },
+  "permissions": [
+    "activeTab",
+    "downloads",
+    "storage"
+  ],
+  "host_permissions": [
+    "https://grok.com/*",
+    "https://assets.grok.com/*"
+  ]
+}
