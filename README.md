@@ -1,6 +1,14 @@
 # Grok Video Downloader
 
-Chrome extension for downloading your authenticated Grok `video/mp4` assets.
+Chrome extension for downloading all of your generated Grok/Imagine videos in one batch.
+
+If you have been generating videos in Grok, you may end up with dozens, hundreds, or thousands of
+`generated_video.mp4` files in `https://grok.com/files?fileType=video`. Grok's UI does not provide a
+simple "download everything" button, so saving them one by one is slow. This extension scans your
+authenticated Grok video library and sends every `video/mp4` asset to Chrome's download manager.
+
+It is meant for your own generated videos. It uses the Grok session already open in your browser and
+only downloads the files returned by your account's assets API.
 
 The popup UI supports English by default and Russian as an optional language.
 
