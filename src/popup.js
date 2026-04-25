@@ -1,5 +1,6 @@
 const ids = {
   folder: document.getElementById("folder"),
+  language: document.getElementById("language"),
   total: document.getElementById("total"),
   downloaded: document.getElementById("downloaded"),
   skipped: document.getElementById("skipped"),
@@ -14,9 +15,85 @@ const ids = {
   clear: document.getElementById("clear")
 };
 
+const messages = {
+  en: {
+    intro: "Downloads only video/mp4 files from your current Grok session.",
+    languageLabel: "Language",
+    folderLabel: "Folder inside Downloads",
+    found: "Found",
+    downloaded: "Downloaded",
+    skipped: "Skipped",
+    errors: "Errors",
+    scan: "Scan",
+    download: "Download",
+    pause: "Pause",
+    resume: "Resume",
+    reset: "Reset extension history",
+    commandFailed: "Extension command failed.",
+    scanFirst: "Open grok.com/files?fileType=video and click Scan.",
+    scanning: "Scanning Grok API...",
+    running: "Queue is active...",
+    downloading: (current, total, id) => `Downloading ${current}/${total}: ${id}`,
+    paused: (completed, total) => `Paused at ${completed}/${total}.`,
+    finished: (completed, total) => `Done: ${completed}/${total}.`,
+    ready: (total) => `Found ${total}. Click Download.`
+  },
+  ru: {
+    intro: "Скачивает только video/mp4 из твоей текущей сессии Grok.",
+    languageLabel: "Язык",
+    folderLabel: "Папка внутри Downloads",
+    found: "Найдено",
+    downloaded: "Скачано",
+    skipped: "Пропущено",
+    errors: "Ошибки",
+    scan: "Скан",
+    download: "Скачать",
+    pause: "Пауза",
+    resume: "Продолжить",
+    reset: "Сбросить историю расширения",
+    commandFailed: "Команда расширения не выполнена.",
+    scanFirst: "Открой grok.com/files?fileType=video и нажми Скан.",
+    scanning: "Сканирую Grok API...",
+    running: "Очередь активна...",
+    downloading: (current, total, id) => `Скачиваю ${current}/${total}: ${id}`,
+    paused: (completed, total) => `Пауза на ${completed}/${total}.`,
+    finished: (completed, total) => `Готово: ${completed}/${total}.`,
+    ready: (total) => `Найдено ${total}. Нажми Скачать.`
+  }
+};
+
+let language = "en";
+
+function t(key, ...args) {
+  const value = messages[language]?.[key] || messages.en[key] || key;
+  return typeof value === "function" ? value(...args) : value;
+}
+
+function applyLanguage() {
+  document.documentElement.lang = language;
+  ids.language.value = language;
+
+  document.querySelectorAll("[data-i18n]").forEach((node) => {
+    node.textContent = t(node.dataset.i18n);
+  });
+}
+
+async function loadLanguage() {
+  const data = await chrome.storage.local.get(["uiLanguage"]);
+  language = data.uiLanguage === "ru" ? "ru" : "en";
+  applyLanguage();
+}
+
+async function setLanguage(nextLanguage) {
+  language = nextLanguage === "ru" ? "ru" : "en";
+  await chrome.storage.local.set({ uiLanguage: language });
+  applyLanguage();
+  await refresh();
+}
+
 async function send(type, payload = {}) {
   const response = await chrome.runtime.sendMessage({ type, ...payload });
-  if (!response?.ok) throw new Error(response?.error || "Extension command failed.");
+  if (!response?.ok) throw new Error(response?.error || t("commandFailed"));
   return response.result;
 }
 
@@ -35,19 +112,19 @@ function render(state) {
   if (state.folder) ids.folder.value = state.folder;
 
   if (state.scanning) {
-    ids.status.textContent = "Сканирую Grok API...";
+    ids.status.textContent = t("scanning");
   } else if (state.running && state.current) {
-    ids.status.textContent = `Скачиваю ${state.current.index + 1}/${total}: ${state.current.id}`;
+    ids.status.textContent = t("downloading", state.current.index + 1, total, state.current.id);
   } else if (state.running) {
-    ids.status.textContent = "Очередь активна...";
+    ids.status.textContent = t("running");
   } else if (state.paused) {
-    ids.status.textContent = `Пауза на ${completed}/${total}.`;
+    ids.status.textContent = t("paused", completed, total);
   } else if (state.finishedAt) {
-    ids.status.textContent = `Готово: ${completed}/${total}.`;
+    ids.status.textContent = t("finished", completed, total);
   } else if (total) {
-    ids.status.textContent = `Найдено ${total}. Нажми Download.`;
+    ids.status.textContent = t("ready", total);
   } else {
-    ids.status.textContent = "Открой grok.com/files?fileType=video и нажми Scan.";
+    ids.status.textContent = t("scanFirst");
   }
 
   const errors = state.errors || [];
@@ -83,6 +160,7 @@ async function run(button, fn) {
   }
 }
 
+ids.language.addEventListener("change", () => setLanguage(ids.language.value));
 ids.scan.addEventListener("click", () => run(ids.scan, () => send("SCAN")));
 ids.start.addEventListener("click", () =>
   run(ids.start, () => send("START", { folder: ids.folder.value.trim() || "grok-videos" }))
@@ -91,5 +169,5 @@ ids.pause.addEventListener("click", () => run(ids.pause, () => send("PAUSE")));
 ids.resume.addEventListener("click", () => run(ids.resume, () => send("RESUME")));
 ids.clear.addEventListener("click", () => run(ids.clear, () => send("CLEAR")));
 
-refresh();
+loadLanguage().then(refresh);
 setInterval(refresh, 1000);

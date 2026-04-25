@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ru">
+<html lang="en">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -11,30 +11,38 @@
       <header class="header">
         <div>
           <h1>Grok Video Downloader</h1>
-          <p>Скачивает только video/mp4 из твоей текущей сессии Grok.</p>
+          <p data-i18n="intro">Downloads only video/mp4 files from your current Grok session.</p>
         </div>
+
+        <label class="language">
+          <span data-i18n="languageLabel">Language</span>
+          <select id="language">
+            <option value="en">English</option>
+            <option value="ru">Русский</option>
+          </select>
+        </label>
       </header>
 
       <label class="field">
-        <span>Папка внутри Downloads</span>
+        <span data-i18n="folderLabel">Folder inside Downloads</span>
         <input id="folder" type="text" value="grok-videos" spellcheck="false">
       </label>
 
       <section class="stats" aria-live="polite">
         <div>
-          <span>Найдено</span>
+          <span data-i18n="found">Found</span>
           <strong id="total">0</strong>
         </div>
         <div>
-          <span>Скачано</span>
+          <span data-i18n="downloaded">Downloaded</span>
           <strong id="downloaded">0</strong>
         </div>
         <div>
-          <span>Пропущено</span>
+          <span data-i18n="skipped">Skipped</span>
           <strong id="skipped">0</strong>
         </div>
         <div>
-          <span>Ошибки</span>
+          <span data-i18n="errors">Errors</span>
           <strong id="failed">0</strong>
         </div>
       </section>
@@ -42,16 +50,16 @@
       <div class="progress">
         <div id="bar" class="bar"></div>
       </div>
-      <div id="status" class="status">Открой grok.com/files?fileType=video и нажми Scan.</div>
+      <div id="status" class="status"></div>
 
       <section class="buttons">
-        <button id="scan">Scan</button>
-        <button id="start">Download</button>
-        <button id="pause">Pause</button>
-        <button id="resume">Resume</button>
+        <button id="scan" data-i18n="scan">Scan</button>
+        <button id="start" data-i18n="download">Download</button>
+        <button id="pause" data-i18n="pause">Pause</button>
+        <button id="resume" data-i18n="resume">Resume</button>
       </section>
 
-      <button id="clear" class="secondary">Reset extension history</button>
+      <button id="clear" class="secondary" data-i18n="reset">Reset extension history</button>
 
       <pre id="errors" class="errors" hidden></pre>
     </main>

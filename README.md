@@ -2,6 +2,8 @@
 
 Chrome extension for downloading your authenticated Grok `video/mp4` assets.
 
+The popup UI supports English by default and Russian as an optional language.
+
 ## Install
 
 1. Open `chrome://extensions`.
